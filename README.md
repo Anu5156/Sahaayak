@@ -8,6 +8,11 @@ app_port: 8000
 ---
 # Sahaayak — Government Scheme Eligibility Assistant
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://sahaayak-1-ore5.onrender.com/)
+
+- **Live Deployment:** [https://sahaayak-1-ore5.onrender.com/](https://sahaayak-1-ore5.onrender.com/)
+- **Live API Docs:** [https://sahaayak-1-ore5.onrender.com/docs](https://sahaayak-1-ore5.onrender.com/docs)
+
 Sahaayak helps citizens find Indian government schemes they can apply for, and explains **why** they qualify or what information is still missing. It also answers questions about schemes in plain English or Hinglish, with every answer grounded in official scheme information and shown with its sources.
 
 Built for Smart India Hackathon (SIH) 2026.
