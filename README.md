@@ -1,3 +1,11 @@
+---
+title: Sahaayak
+emoji: 🏛️
+colorFrom: green
+colorTo: blue
+sdk: docker
+app_port: 8000
+---
 # Sahaayak — Government Scheme Eligibility Assistant
 
 Sahaayak helps citizens find Indian government schemes they can apply for, and explains **why** they qualify or what information is still missing. It also answers questions about schemes in plain English or Hinglish, with every answer grounded in official scheme information and shown with its sources.
