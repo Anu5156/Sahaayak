@@ -1,0 +1,295 @@
+{
+  "meta": {
+    "note": "Simplified eligibility rules for selected Government of India schemes, prepared for demonstration. Rules change over time; always confirm on the official portal before applying.",
+    "currency": "INR"
+  },
+  "schemes": [
+    {
+      "id": "pm-kisan",
+      "name": "Pradhan Mantri Kisan Samman Nidhi",
+      "short_name": "PM-KISAN",
+      "ministry": "Ministry of Agriculture & Farmers Welfare",
+      "category": "Agriculture",
+      "summary": "Income support for landholding farmer families, paid directly into their bank accounts.",
+      "benefits": "Rs 6,000 per year, paid in three equal instalments of Rs 2,000 through Direct Benefit Transfer.",
+      "eligibility": "Landholding farmer families with cultivable land in their name. Excluded: income tax payers, institutional landholders, serving or retired government employees, and professionals such as doctors, engineers and lawyers.",
+      "documents": ["Aadhaar card", "Land ownership records", "Bank account linked to Aadhaar"],
+      "how_to_apply": "Register on the PM-KISAN portal through Farmers Corner, at a Common Service Centre, or through the state agriculture department. Complete e-KYC.",
+      "url": "https://pmkisan.gov.in",
+      "rules": [
+        {"field": "occupation", "op": "eq", "value": "farmer", "reason": "must be a farmer"},
+        {"field": "owns_agri_land", "op": "is_true", "reason": "must own cultivable agricultural land"},
+        {"field": "is_income_tax_payer", "op": "is_false", "reason": "must not be an income tax payer"},
+        {"field": "is_govt_employee", "op": "is_false", "reason": "must not be a government employee"}
+      ]
+    },
+    {
+      "id": "ab-pmjay",
+      "name": "Ayushman Bharat Pradhan Mantri Jan Arogya Yojana",
+      "short_name": "AB PM-JAY",
+      "ministry": "Ministry of Health & Family Welfare",
+      "category": "Health",
+      "summary": "Cashless health cover for secondary and tertiary hospital care at empanelled hospitals.",
+      "benefits": "Health cover of up to Rs 5 lakh per family per year for hospitalisation, covering pre-existing conditions from day one.",
+      "eligibility": "Families identified as deprived in the SECC 2011 data (and state-expanded lists), plus all senior citizens aged 70 and above regardless of income.",
+      "documents": ["Aadhaar card", "Ration card or PM letter", "Mobile number"],
+      "how_to_apply": "Check eligibility on the PM-JAY beneficiary portal or at an empanelled hospital's Ayushman Mitra desk, then generate an Ayushman card.",
+      "url": "https://pmjay.gov.in",
+      "rules": [
+        {"any": [
+          {"field": "age", "op": "gte", "value": 70, "reason": "aged 70 or above"},
+          {"field": "is_bpl", "op": "is_true", "reason": "from a deprived / BPL household"}
+        ], "reason": "must be aged 70+ or from a deprived (BPL) household"}
+      ]
+    },
+    {
+      "id": "pmuy",
+      "name": "Pradhan Mantri Ujjwala Yojana",
+      "short_name": "PMUY",
+      "ministry": "Ministry of Petroleum & Natural Gas",
+      "category": "Household",
+      "summary": "Free LPG connections for women from poor households.",
+      "benefits": "Deposit-free LPG connection with the first refill and stove, plus a targeted subsidy on refills.",
+      "eligibility": "An adult woman (18+) from a poor household, with no existing LPG connection in the household.",
+      "documents": ["Aadhaar card", "Ration card", "Bank account details", "Address proof"],
+      "how_to_apply": "Apply online on the PMUY portal or at the nearest LPG distributor.",
+      "url": "https://www.pmuy.gov.in",
+      "rules": [
+        {"field": "gender", "op": "eq", "value": "female", "reason": "applicant must be a woman"},
+        {"field": "age", "op": "gte", "value": 18, "reason": "applicant must be 18 or older"},
+        {"field": "is_bpl", "op": "is_true", "reason": "household must be poor (BPL)"},
+        {"field": "has_lpg_connection", "op": "is_false", "reason": "household must not already have an LPG connection"}
+      ]
+    },
+    {
+      "id": "pmay-g",
+      "name": "Pradhan Mantri Awas Yojana - Gramin",
+      "short_name": "PMAY-G",
+      "ministry": "Ministry of Rural Development",
+      "category": "Housing",
+      "summary": "Financial assistance to build a pucca house for houseless and kutcha-house families in rural areas.",
+      "benefits": "Rs 1.2 lakh in plains (Rs 1.3 lakh in hilly and difficult areas) for house construction, plus support for toilets through convergence.",
+      "eligibility": "Rural households that are houseless or live in kutcha / dilapidated houses, identified through SECC and Awaas+ surveys.",
+      "documents": ["Aadhaar card", "Bank account details", "Job card (MGNREGA)", "SBM number if applicable"],
+      "how_to_apply": "Beneficiaries are selected from the Gram Panchayat priority list; contact the Gram Panchayat or block office.",
+      "url": "https://pmayg.nic.in",
+      "rules": [
+        {"field": "residence", "op": "eq", "value": "rural", "reason": "must live in a rural area"},
+        {"field": "has_pucca_house", "op": "is_false", "reason": "household must not own a pucca house"}
+      ]
+    },
+    {
+      "id": "pmay-u",
+      "name": "Pradhan Mantri Awas Yojana - Urban 2.0",
+      "short_name": "PMAY-U 2.0",
+      "ministry": "Ministry of Housing & Urban Affairs",
+      "category": "Housing",
+      "summary": "Assistance for urban EWS, LIG and MIG families to buy, build or rent an affordable house.",
+      "benefits": "Central assistance for house construction or purchase, and an interest subsidy on home loans for eligible families.",
+      "eligibility": "Urban families without a pucca house anywhere in India, with annual income up to Rs 9 lakh (EWS up to Rs 3 lakh, LIG Rs 3-6 lakh, MIG Rs 6-9 lakh).",
+      "documents": ["Aadhaar card", "Income certificate", "Bank account details", "Property / land documents"],
+      "how_to_apply": "Apply on the PMAY-U 2.0 portal or through the urban local body.",
+      "url": "https://pmay-urban.gov.in",
+      "rules": [
+        {"field": "residence", "op": "eq", "value": "urban", "reason": "must live in an urban area"},
+        {"field": "has_pucca_house", "op": "is_false", "reason": "family must not own a pucca house"},
+        {"field": "annual_income", "op": "lte", "value": 900000, "reason": "annual family income must be Rs 9 lakh or less"}
+      ]
+    },
+    {
+      "id": "ssy",
+      "name": "Sukanya Samriddhi Yojana",
+      "short_name": "SSY",
+      "ministry": "Ministry of Finance",
+      "category": "Savings",
+      "summary": "High-interest small savings account for the education and marriage of a girl child.",
+      "benefits": "Government-set interest rate (revised quarterly), tax benefits under Section 80C, and tax-free maturity after 21 years.",
+      "eligibility": "A parent or legal guardian can open an account for a girl child below 10 years of age; up to two girls per family.",
+      "documents": ["Girl child's birth certificate", "Parent/guardian ID and address proof", "Photographs"],
+      "how_to_apply": "Open an account at a post office or an authorised bank branch.",
+      "url": "https://www.nsiindia.gov.in",
+      "rules": [
+        {"field": "has_girl_child_under_10", "op": "is_true", "reason": "must have a daughter below 10 years of age"}
+      ]
+    },
+    {
+      "id": "apy",
+      "name": "Atal Pension Yojana",
+      "short_name": "APY",
+      "ministry": "Ministry of Finance",
+      "category": "Pension",
+      "summary": "Guaranteed monthly pension in old age, mainly for workers in the unorganised sector.",
+      "benefits": "Guaranteed pension of Rs 1,000 to Rs 5,000 per month from age 60, depending on the contribution.",
+      "eligibility": "Indian citizens aged 18 to 40 with a savings bank account. Income tax payers cannot join (since 1 October 2022).",
+      "documents": ["Aadhaar card", "Savings bank account", "Mobile number"],
+      "how_to_apply": "Enrol through your bank branch or net banking.",
+      "url": "https://www.jansuraksha.gov.in",
+      "rules": [
+        {"field": "age", "op": "between", "value": [18, 40], "reason": "age must be between 18 and 40"},
+        {"field": "has_bank_account", "op": "is_true", "reason": "must have a savings bank account"},
+        {"field": "is_income_tax_payer", "op": "is_false", "reason": "must not be an income tax payer"}
+      ]
+    },
+    {
+      "id": "pmjjby",
+      "name": "Pradhan Mantri Jeevan Jyoti Bima Yojana",
+      "short_name": "PMJJBY",
+      "ministry": "Ministry of Finance",
+      "category": "Insurance",
+      "summary": "Low-cost one-year renewable life insurance.",
+      "benefits": "Life cover of Rs 2 lakh for death due to any cause, for an annual premium of Rs 436.",
+      "eligibility": "People aged 18 to 50 with a savings bank or post office account.",
+      "documents": ["Aadhaar card", "Savings bank account"],
+      "how_to_apply": "Enrol through your bank branch, net banking or post office.",
+      "url": "https://www.jansuraksha.gov.in",
+      "rules": [
+        {"field": "age", "op": "between", "value": [18, 50], "reason": "age must be between 18 and 50"},
+        {"field": "has_bank_account", "op": "is_true", "reason": "must have a savings bank account"}
+      ]
+    },
+    {
+      "id": "pmsby",
+      "name": "Pradhan Mantri Suraksha Bima Yojana",
+      "short_name": "PMSBY",
+      "ministry": "Ministry of Finance",
+      "category": "Insurance",
+      "summary": "Low-cost accident insurance renewed every year.",
+      "benefits": "Rs 2 lakh for accidental death or full disability, Rs 1 lakh for partial disability, for an annual premium of Rs 20.",
+      "eligibility": "People aged 18 to 70 with a savings bank or post office account.",
+      "documents": ["Aadhaar card", "Savings bank account"],
+      "how_to_apply": "Enrol through your bank branch, net banking or post office.",
+      "url": "https://www.jansuraksha.gov.in",
+      "rules": [
+        {"field": "age", "op": "between", "value": [18, 70], "reason": "age must be between 18 and 70"},
+        {"field": "has_bank_account", "op": "is_true", "reason": "must have a savings bank account"}
+      ]
+    },
+    {
+      "id": "pmmy",
+      "name": "Pradhan Mantri MUDRA Yojana",
+      "short_name": "PMMY",
+      "ministry": "Ministry of Finance",
+      "category": "Business",
+      "summary": "Collateral-free loans for non-farm micro and small enterprises.",
+      "benefits": "Loans under Shishu (up to Rs 50,000), Kishore (up to Rs 5 lakh), Tarun (up to Rs 10 lakh) and Tarun Plus (up to Rs 20 lakh for those who repaid a Tarun loan).",
+      "eligibility": "Any Indian citizen with a business plan for a non-farm income-generating activity in manufacturing, trading or services.",
+      "documents": ["ID and address proof", "Business plan", "Quotations for machinery/items", "Bank statements"],
+      "how_to_apply": "Apply at any bank, NBFC or MFI, or online through the Udyamimitra portal.",
+      "url": "https://www.mudra.org.in",
+      "rules": [
+        {"field": "age", "op": "gte", "value": 18, "reason": "applicant must be 18 or older"},
+        {"field": "occupation", "op": "in", "value": ["entrepreneur", "street_vendor", "artisan"], "reason": "must run or plan a non-farm small business"}
+      ]
+    },
+    {
+      "id": "pm-svanidhi",
+      "name": "PM Street Vendor's AtmaNirbhar Nidhi",
+      "short_name": "PM SVANidhi",
+      "ministry": "Ministry of Housing & Urban Affairs",
+      "category": "Business",
+      "summary": "Working-capital loans for urban street vendors, with rewards for digital payments.",
+      "benefits": "Collateral-free working-capital loans in tranches, a 7% interest subsidy on timely repayment, and cashback for digital transactions.",
+      "eligibility": "Street vendors vending in urban areas, holding a certificate of vending or identified in the urban local body survey.",
+      "documents": ["Aadhaar card", "Certificate of vending / letter of recommendation", "Bank account details"],
+      "how_to_apply": "Apply on the PM SVANidhi portal or through a Common Service Centre.",
+      "url": "https://pmsvanidhi.mohua.gov.in",
+      "rules": [
+        {"field": "occupation", "op": "eq", "value": "street_vendor", "reason": "must be a street vendor"},
+        {"field": "residence", "op": "eq", "value": "urban", "reason": "must vend in an urban area"}
+      ]
+    },
+    {
+      "id": "stand-up-india",
+      "name": "Stand-Up India",
+      "short_name": "Stand-Up India",
+      "ministry": "Ministry of Finance",
+      "category": "Business",
+      "summary": "Bank loans for SC/ST and women entrepreneurs starting a new (greenfield) enterprise.",
+      "benefits": "Bank loans between Rs 10 lakh and Rs 1 crore for a greenfield enterprise in manufacturing, services, trading or agri-allied activities.",
+      "eligibility": "SC/ST and/or women entrepreneurs aged 18 or above, setting up a first-time (greenfield) enterprise, not in default to any bank.",
+      "documents": ["ID and address proof", "Caste certificate (if SC/ST)", "Project report", "Business address proof"],
+      "how_to_apply": "Apply on the Stand-Up Mitra portal or at a scheduled commercial bank branch.",
+      "url": "https://www.standupmitra.in",
+      "rules": [
+        {"field": "age", "op": "gte", "value": 18, "reason": "applicant must be 18 or older"},
+        {"field": "occupation", "op": "eq", "value": "entrepreneur", "reason": "must be starting an enterprise"},
+        {"any": [
+          {"field": "gender", "op": "eq", "value": "female", "reason": "woman entrepreneur"},
+          {"field": "category", "op": "in", "value": ["sc", "st"], "reason": "SC/ST entrepreneur"}
+        ], "reason": "must be a woman or belong to SC/ST"}
+      ]
+    },
+    {
+      "id": "post-matric-sc",
+      "name": "Post Matric Scholarship for Scheduled Caste Students",
+      "short_name": "PMS-SC",
+      "ministry": "Ministry of Social Justice & Empowerment",
+      "category": "Education",
+      "summary": "Scholarship for SC students studying beyond Class 10.",
+      "benefits": "Compulsory fees reimbursed and an academic allowance, for courses from Class 11 up to PhD.",
+      "eligibility": "SC students studying at post-matric level whose family income is up to Rs 2.5 lakh per year.",
+      "documents": ["Caste certificate", "Income certificate", "Previous marksheet", "Fee receipt", "Bank account details"],
+      "how_to_apply": "Apply on the National Scholarship Portal or your state scholarship portal.",
+      "url": "https://scholarships.gov.in",
+      "rules": [
+        {"field": "occupation", "op": "eq", "value": "student", "reason": "must be a student"},
+        {"field": "category", "op": "eq", "value": "sc", "reason": "must belong to a Scheduled Caste"},
+        {"field": "annual_income", "op": "lte", "value": 250000, "reason": "family income must be Rs 2.5 lakh or less"}
+      ]
+    },
+    {
+      "id": "pmmvy",
+      "name": "Pradhan Mantri Matru Vandana Yojana",
+      "short_name": "PMMVY",
+      "ministry": "Ministry of Women & Child Development",
+      "category": "Women & Child",
+      "summary": "Maternity benefit to support nutrition and partly compensate wage loss.",
+      "benefits": "Rs 5,000 for the first child in instalments, and Rs 6,000 for a second child if it is a girl, by Direct Benefit Transfer.",
+      "eligibility": "Pregnant women and lactating mothers aged 19 or above, excluding those in regular government employment.",
+      "documents": ["Aadhaar card", "MCP card", "Bank account details"],
+      "how_to_apply": "Register at the Anganwadi centre or approved health facility, or on the PMMVY portal.",
+      "url": "https://pmmvy.wcd.gov.in",
+      "rules": [
+        {"field": "gender", "op": "eq", "value": "female", "reason": "must be a woman"},
+        {"field": "is_pregnant_or_lactating", "op": "is_true", "reason": "must be pregnant or a lactating mother"},
+        {"field": "age", "op": "gte", "value": 19, "reason": "must be 19 or older"},
+        {"field": "is_govt_employee", "op": "is_false", "reason": "must not be a regular government employee"}
+      ]
+    },
+    {
+      "id": "pm-vishwakarma",
+      "name": "PM Vishwakarma",
+      "short_name": "PM Vishwakarma",
+      "ministry": "Ministry of Micro, Small & Medium Enterprises",
+      "category": "Skills",
+      "summary": "End-to-end support for traditional artisans and craftspeople in 18 trades.",
+      "benefits": "PM Vishwakarma certificate and ID, skill training with stipend, a toolkit incentive of Rs 15,000, collateral-free credit up to Rs 3 lakh at 5% interest, and marketing support.",
+      "eligibility": "Artisans and craftspeople aged 18 or above working with their hands and tools in one of 18 listed trades (such as carpenter, blacksmith, potter, tailor, cobbler). Government employees and their families are excluded.",
+      "documents": ["Aadhaar card", "Mobile number", "Bank account details", "Ration card"],
+      "how_to_apply": "Register at a Common Service Centre; verification is done by the Gram Panchayat / urban local body.",
+      "url": "https://pmvishwakarma.gov.in",
+      "rules": [
+        {"field": "occupation", "op": "eq", "value": "artisan", "reason": "must be a traditional artisan or craftsperson"},
+        {"field": "age", "op": "gte", "value": 18, "reason": "must be 18 or older"},
+        {"field": "is_govt_employee", "op": "is_false", "reason": "must not be a government employee"}
+      ]
+    },
+    {
+      "id": "ignoaps",
+      "name": "Indira Gandhi National Old Age Pension Scheme",
+      "short_name": "IGNOAPS",
+      "ministry": "Ministry of Rural Development (NSAP)",
+      "category": "Pension",
+      "summary": "Monthly pension for elderly people from BPL households.",
+      "benefits": "Central assistance of Rs 200 per month for ages 60-79 and Rs 500 per month for 80+, topped up by most states.",
+      "eligibility": "Persons aged 60 or above belonging to a BPL household.",
+      "documents": ["Age proof", "BPL card", "Aadhaar card", "Bank account details"],
+      "how_to_apply": "Apply through the Gram Panchayat, municipality or district social welfare office.",
+      "url": "https://nsap.nic.in",
+      "rules": [
+        {"field": "age", "op": "gte", "value": 60, "reason": "must be 60 or older"},
+        {"field": "is_bpl", "op": "is_true", "reason": "must belong to a BPL household"}
+      ]
+    }
+  ]
+}

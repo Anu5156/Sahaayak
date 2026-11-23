@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sahaayak — Find government schemes for you</title>
+<style>
+  :root {
+    --ink: #1c2430; --muted: #5b6676; --line: #dfe3ea; --bg: #f6f4ef; --card: #ffffff;
+    --brand: #0f5c4d; --brand-soft: #e3f1ed; --amber: #9a6200; --amber-soft: #fdf3dc;
+    --red: #a23b2a; --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         color: var(--ink); background: var(--bg); line-height: 1.5; }
+  header { background: var(--brand); color: #fff; padding: 28px 20px 22px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+  header h1 { margin: 0; font-size: 28px; letter-spacing: .3px; }
+  header p { margin: 6px 0 0; opacity: .9; }
+  nav { display: flex; gap: 8px; margin: 22px 0 18px; }
+  nav button { border: 1px solid var(--line); background: var(--card); color: var(--ink);
+               padding: 10px 18px; border-radius: 999px; font-size: 15px; cursor: pointer; }
+  nav button[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+           padding: 22px; margin-bottom: 22px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+  input, select, textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--line);
+                            border-radius: 8px; font: inherit; background: #fff; color: var(--ink); }
+  input:focus, select:focus, textarea:focus, button:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+  .actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .btn { background: var(--brand); color: #fff; border: 0; padding: 11px 22px; border-radius: 8px;
+         font-size: 15px; font-weight: 600; cursor: pointer; }
+  .btn.secondary { background: transparent; color: var(--brand); border: 1px solid var(--brand); }
+  .hint { color: var(--muted); font-size: 13px; }
+  h2 { font-size: 18px; margin: 0 0 12px; }
+  .summary { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .stat { background: var(--bg); border-radius: 10px; padding: 10px 16px; }
+  .stat b { font-size: 22px; display: block; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .card.eligible { border-left: 5px solid var(--brand); }
+  .card.maybe { border-left: 5px solid var(--amber); }
+  .card-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .card h3 { margin: 0; font-size: 16px; }
+  .tag { font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+  .tag.eligible { background: var(--brand-soft); color: var(--brand); }
+  .tag.maybe { background: var(--amber-soft); color: var(--amber); }
+  .tag.not_eligible { background: #f7e4e0; color: var(--red); }
+  .meta { color: var(--muted); font-size: 13px; margin: 2px 0 8px; }
+  ul.reasons { margin: 6px 0; padding-left: 18px; font-size: 14px; }
+  ul.reasons li.ok::marker { content: "✓ "; color: var(--brand); }
+  ul.reasons li.need::marker { content: "? "; color: var(--amber); }
+  details { margin-top: 8px; font-size: 14px; }
+  details summary { cursor: pointer; color: var(--brand); font-weight: 600; }
+  details dl { margin: 8px 0 0; }
+  details dt { font-weight: 600; margin-top: 6px; }
+  details dd { margin: 0; color: var(--muted); }
+  a { color: var(--brand); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+  .chip { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 6px 12px;
+          font-size: 13px; cursor: pointer; }
+  .answer { white-space: pre-wrap; background: var(--bg); border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .source { font-size: 13px; border-top: 1px solid var(--line); padding: 8px 0; }
+  .source b { font-size: 14px; }
+  .empty { color: var(--muted); }
+  footer { color: var(--muted); font-size: 12px; text-align: center; padding: 10px 20px 30px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Sahaayak</h1>
+    <p>Find the government schemes you can apply for, and see exactly why.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav role="tablist" aria-label="Sahaayak tools">
+    <button role="tab" id="tab-check" aria-controls="panel-check" aria-selected="true">Check my eligibility</button>
+    <button role="tab" id="tab-ask" aria-controls="panel-ask" aria-selected="false">Ask a question</button>
+  </nav>
+
+  <section id="panel-check" role="tabpanel" aria-labelledby="tab-check">
+    <form class="panel" id="profile-form">
+      <h2>Tell us about yourself</h2>
+      <p class="hint">Fill what you know. Anything left blank shows up as "need more info" instead of a wrong answer.</p>
+      <div class="grid">
+        <div><label for="age">Age</label><input id="age" name="age" type="number" min="0" max="120" placeholder="e.g. 35"></div>
+        <div><label for="gender">Gender</label>
+          <select id="gender" name="gender"><option value="">Not sure</option><option value="female">Female</option><option value="male">Male</option><option value="other">Other</option></select></div>
+        <div><label for="residence">Where do you live?</label>
+          <select id="residence" name="residence"><option value="">Not sure</option><option value="rural">Village (rural)</option><option value="urban">Town / city (urban)</option></select></div>
+        <div><label for="state">State</label><input id="state" name="state" placeholder="e.g. Karnataka"></div>
+        <div><label for="category">Social category</label>
+          <select id="category" name="category"><option value="">Not sure</option><option value="general">General</option><option value="obc">OBC</option><option value="sc">SC</option><option value="st">ST</option></select></div>
+        <div><label for="occupation">Main occupation</label>
+          <select id="occupation" name="occupation"><option value="">Not sure</option>
+            <option value="farmer">Farmer</option><option value="student">Student</option>
+            <option value="street_vendor">Street vendor</option><option value="artisan">Artisan / craftsperson</option>
+            <option value="entrepreneur">Business owner / starting a business</option><option value="salaried">Salaried job</option>
+            <option value="unemployed">Looking for work</option><option value="homemaker">Homemaker</option>
+            <option value="retired">Retired</option><option value="other">Other</option></select></div>
+        <div><label for="annual_income">Annual family income (₹)</label><input id="annual_income" name="annual_income" type="number" min="0" step="1000" placeholder="e.g. 180000"></div>
+      </div>
+      <h2 style="margin-top:20px">Yes / no questions</h2>
+      <div class="grid" id="bool-grid"></div>
+      <div class="actions">
+        <button class="btn" type="submit">Find my schemes</button>
+        <button class="btn secondary" type="button" id="sample">Try a sample profile</button>
+        <button class="btn secondary" type="reset">Clear</button>
+      </div>
+    </form>
+    <div class="panel" id="results" hidden aria-live="polite"></div>
+  </section>
+
+  <section id="panel-ask" role="tabpanel" aria-labelledby="tab-ask" hidden>
+    <form class="panel" id="ask-form">
+      <h2>Ask about any scheme</h2>
+      <p class="hint">Ask in simple English or Hinglish. Answers come only from the scheme information, with sources.</p>
+      <label for="question">Your question</label>
+      <textarea id="question" rows="2" placeholder="e.g. How do I get a free gas connection?"></textarea>
+      <div class="chips" id="examples"></div>
+      <div class="actions">
+        <button class="btn" type="submit">Ask</button>
+        <label class="hint" style="margin:0;display:flex;gap:6px;align-items:center;font-weight:400">
+          <input type="checkbox" id="use-profile" style="width:auto"> Use my profile to mark eligibility
+        </label>
+      </div>
+    </form>
+    <div class="panel" id="ask-results" hidden aria-live="polite"></div>
+  </section>
+</main>
+
+<footer>Eligibility rules are simplified for guidance. Always confirm on the official portal before applying.</footer>
+
+<script>
+const BOOLS = [
+  ["is_bpl", "Is your household below the poverty line (BPL)?"],
+  ["has_bank_account", "Do you have a savings bank account?"],
+  ["owns_agri_land", "Do you own farm land?"],
+  ["has_pucca_house", "Does your family own a pucca (permanent) house?"],
+  ["is_income_tax_payer", "Do you pay income tax?"],
+  ["is_govt_employee", "Are you a government employee?"],
+  ["has_lpg_connection", "Does your household have an LPG connection?"],
+  ["is_pregnant_or_lactating", "Are you pregnant or breastfeeding?"],
+  ["has_girl_child_under_10", "Do you have a daughter under 10?"],
+];
+const EXAMPLES = ["How do I get a free gas connection?", "kisan ko paisa kaise milega",
+  "Loan to start a small shop", "Scholarship for SC students", "Pension for my elderly father",
+  "Documents needed for Ayushman card"];
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+
+// Build yes/no selects
+$("#bool-grid").innerHTML = BOOLS.map(([k, q]) => `
+  <div><label for="${k}">${q}</label>
+  <select id="${k}" name="${k}"><option value="">Not sure</option><option value="true">Yes</option><option value="false">No</option></select></div>`).join("");
+
+$("#examples").innerHTML = EXAMPLES.map(e => `<button type="button" class="chip">${esc(e)}</button>`).join("");
+$("#examples").addEventListener("click", (e) => {
+  if (e.target.classList.contains("chip")) { $("#question").value = e.target.textContent; $("#ask-form").requestSubmit(); }
+});
+
+// Tabs
+document.querySelectorAll('[role="tab"]').forEach(tab => tab.addEventListener("click", () => {
+  document.querySelectorAll('[role="tab"]').forEach(t => {
+    const on = t === tab; t.setAttribute("aria-selected", on);
+    document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+  });
+}));
+
+function readProfile() {
+  const p = {};
+  for (const el of $("#profile-form").elements) {
+    if (!el.name || el.value === "") continue;
+    if (["age", "annual_income"].includes(el.name)) p[el.name] = Number(el.value);
+    else if (el.value === "true" || el.value === "false") p[el.name] = el.value === "true";
+    else p[el.name] = el.value;
+  }
+  return p;
+}
+
+async function post(url, body) {
+  const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error((await r.json()).detail?.[0]?.msg || r.statusText);
+  return r.json();
+}
+
+function schemeCard(item) {
+  const s = item.scheme;
+  const label = item.status === "eligible" ? "Likely eligible" : "Need more info";
+  return `<article class="card ${item.status}">
+    <div class="card-head"><h3>${esc(s.name)}</h3><span class="tag ${item.status}">${label}</span></div>
+    <div class="meta">${esc(s.short_name)} · ${esc(s.category)} · ${esc(s.ministry)}</div>
+    <div>${esc(s.summary)}</div>
+    <ul class="reasons">
+      ${item.met.map(r => `<li class="ok">${esc(r)}</li>`).join("")}
+      ${item.missing.map(r => `<li class="need">Tell us: ${esc(r)}</li>`).join("")}
+    </ul>
+    <details><summary>Benefits, documents and how to apply</summary>
+      <dl><dt>Benefits</dt><dd>${esc(s.benefits)}</dd>
+      <dt>Documents</dt><dd>${s.documents.map(esc).join(", ")}</dd>
+      <dt>How to apply</dt><dd>${esc(s.how_to_apply)}</dd>
+      <dt>Official site</dt><dd><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></dd></dl>
+    </details>
+  </article>`;
+}
+
+$("#profile-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const box = $("#results"); box.hidden = false; box.innerHTML = "<p class='empty'>Checking schemes…</p>";
+  try {
+    const data = await post("/api/check", readProfile());
+    box.innerHTML = `<h2>Your results</h2>
+      <div class="summary">
+        <div class="stat"><b>${data.eligible.length}</b>likely eligible</div>
+        <div class="stat"><b>${data.maybe.length}</b>need more info</div>
+        <div class="stat"><b>${data.not_eligible_count}</b>not a match</div>
+      </div>
+      ${data.eligible.map(schemeCard).join("") || "<p class='empty'>No confirmed matches yet. Answer more questions above.</p>"}
+      ${data.maybe.length ? "<h2 style='margin-top:18px'>Might apply — answer a few more questions</h2>" + data.maybe.map(schemeCard).join("") : ""}`;
+    box.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (err) { box.innerHTML = `<p class="empty">Something went wrong: ${esc(err.message)}</p>`; }
+});
+
+$("#sample").addEventListener("click", () => {
+  const sample = { age: 34, gender: "female", residence: "rural", state: "Karnataka", category: "sc",
+    occupation: "farmer", annual_income: 120000, is_bpl: "true", has_bank_account: "true", owns_agri_land: "true",
+    has_pucca_house: "false", is_income_tax_payer: "false", is_govt_employee: "false", has_lpg_connection: "false",
+    is_pregnant_or_lactating: "false", has_girl_child_under_10: "true" };
+  for (const [k, v] of Object.entries(sample)) document.getElementById(k).value = String(v);
+  $("#profile-form").requestSubmit();
+});
+
+$("#ask-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const q = $("#question").value.trim(); if (q.length < 2) return;
+  const box = $("#ask-results"); box.hidden = false; box.innerHTML = "<p class='empty'>Searching…</p>";
+  const body = { question: q, k: 5 };
+  if ($("#use-profile").checked) body.profile = readProfile();
+  try {
+    const data = await post("/api/ask", body);
+    const tag = { eligible: "Likely eligible", maybe: "Need more info", not_eligible: "Not a match" };
+    box.innerHTML = `<h2>Answer</h2><div class="answer">${esc(data.answer)}</div>
+      <p class="hint">${data.mode === "llm" ? "Written by a local AI model from the sources below." : "Taken directly from the sources below."}</p>
+      <h2 style="margin-top:14px">Sources</h2>
+      ${data.sources.map((s, i) => `<div class="source"><b>[${i + 1}] ${esc(s.scheme_name)}</b> — ${esc(s.section)}
+        ${s.eligibility ? `<span class="tag ${s.eligibility}">${tag[s.eligibility]}</span>` : ""}
+        <div>${esc(s.text)}</div><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></div>`).join("")}`;
+  } catch (err) { box.innerHTML = `<p class="empty">Something went wrong: ${esc(err.message)}</p>`; }
+});
+</script>
+</body>
+</html>
